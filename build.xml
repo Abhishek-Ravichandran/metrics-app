@@ -1,0 +1,89 @@
+<project name="metrics-app" default="all" basedir="./">
+    
+     <target name="metrics-war" depends="clean, compile-metrics-servlet" description="Makes the WAR file for the servlet">
+        <delete file="ROOT.war"/>
+        <copy file="conf/web.xml" tofile="target/WEB-INF/web.xml" overwrite="true" />
+        <copy todir="target/WEB-INF/lib" overwrite="true">
+            <fileset dir="lib">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+        <jar destfile="ROOT.war" update="true">
+            <fileset dir="target">
+                <include name="**/*.class"/>
+                <include name="**/*.jar"/>
+                <include name="WEB-INF/web.xml"/>
+            </fileset>
+        </jar>
+    </target>
+    
+    <target name="compile-metrics-servlet" depends="compile-metrics-storage">
+        <javac srcdir="src/com/metricsapp/api" destdir="target/WEB-INF/classes" deprecation="on" debug="true" includeantruntime="false">
+           <classpath>
+               <fileset dir="lib">
+                   <include name="*.jar"/>
+               </fileset>
+           </classpath>
+           <compilerarg value="-Xlint"/> 
+        </javac>  
+    </target>
+    
+    <target name="compile-metrics-storage" depends="init">
+        <javac srcdir="src/com/metricsapp/storage" destdir="target/WEB-INF/classes" deprecation="on" debug="true" includeantruntime="false">
+           <classpath>
+               <fileset dir="lib">
+                   <include name="*.jar"/>
+               </fileset>
+           </classpath>
+           <compilerarg value="-Xlint"/> 
+        </javac>  
+    </target>
+    
+    <target name="run-metrics-tests" depends="clean, compile-metrics-storage, compile-metrics-tests, metrics-jar">
+        <java fork="true" failonerror="yes" classname="test.com.metricsapp.testsuite.RunAllTests">
+            <classpath>
+                <fileset dir="lib">
+                    <include name="*.jar" />
+                </fileset>
+                <fileset dir=".">
+                    <include name="metrics.jar"/>
+                </fileset>
+            </classpath>
+        </java>
+    </target>
+    
+    <target name="metrics-jar" depends="compile-metrics-tests">
+        <delete file="metrics.jar"/>
+        <jar destfile="metrics.jar" update="true">
+        	<manifest>
+        		<attribute name="Main-Class" value="test.com.metricsapp.testsuite.RunAllTests"/>
+        	</manifest>
+            <fileset dir="target/WEB-INF/classes">
+                <include name="**/*.class"/>
+            </fileset>
+        </jar>
+    </target>
+    
+
+    <target name="compile-metrics-tests" depends="init, compile-metrics-storage">
+        <javac srcdir="src/test/" destdir="target/WEB-INF/classes" deprecation="on" debug="true" includeantruntime="false">
+           <classpath>
+               <fileset dir="lib">
+                   <include name="*.jar"/>
+               </fileset>
+           </classpath>
+           <compilerarg value="-Xlint"/> 
+        </javac>
+    </target>
+        
+    <target name="init">
+        <mkdir dir="target/WEB-INF/classes"/>
+    </target>
+    
+    <target name="clean">
+        <delete dir="target"/>
+        <delete file="ROOT.war"/>
+        <delete file="metrics.jar"/>
+    </target>
+    
+</project>
