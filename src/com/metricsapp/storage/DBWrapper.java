@@ -95,38 +95,16 @@ public class DBWrapper {
         return true;
     }
     
-    public static synchronized String printMetric(String name) throws DatabaseException {
-        if(!metricExists(name))
-            return null;
-
-        Metric metric = metricTable.get(name);
-        String vals = "";
-        for(Double val : metric.getValues()) {
-            vals += Double.toString(val) + " ";
-        }
-        
-        entityStore.sync();
-        envmnt.sync();
-        return vals;
-    }
-    
     public static synchronized Double getMin(String name) throws DatabaseException {
         if(!metricExists(name))
             return null;
         
         Metric metric = metricTable.get(name);
-        ArrayList<Double> metricValues = metric.getValues();
         
-        if(metricValues.isEmpty())
+        if(metric.isEmpty())
             return null;
-        
-        Double min = Double.MAX_VALUE;
-        for(Double d : metricValues) {
-            if(d < min)
-                min = d;
-        }
-        
-        return min;
+            
+        return metric.getMin();
     } 
     
     public static synchronized Double getMax(String name) throws DatabaseException {
@@ -134,18 +112,11 @@ public class DBWrapper {
             return null;
         
         Metric metric = metricTable.get(name);
-        ArrayList<Double> metricValues = metric.getValues();
         
-        if(metricValues.isEmpty())
+        if(metric.isEmpty())
             return null;
-        
-        Double max = Double.MIN_VALUE;
-        for(Double d : metricValues) {
-            if(d > max)
-                max = d;
-        }
-        
-        return max;
+            
+        return metric.getMax();
     }
     
     public static synchronized Double getMean(String name) throws DatabaseException {
@@ -153,16 +124,11 @@ public class DBWrapper {
             return null;
         
         Metric metric = metricTable.get(name);
-        ArrayList<Double> metricValues = metric.getValues();
         
-        if(metricValues.isEmpty())
+        if(metric.isEmpty())
             return null;
-        
-        Double total = 0.0d;
-        for(Double d : metricValues)
-            total += d;
-        
-        return total / metricValues.size();
+            
+        return metric.getMean();
     }
     
     public static synchronized Double getMedian(String name) throws DatabaseException {
@@ -170,18 +136,24 @@ public class DBWrapper {
             return null;
         
         Metric metric = metricTable.get(name);
-        ArrayList<Double> metricValues = metric.getValues();
         
-        if(metricValues.isEmpty())
+        if(metric.isEmpty())
+            return null;
+            
+        return metric.getMedian();
+    }
+    
+    public static synchronized String printMetric(String name) throws DatabaseException {
+        if(!metricExists(name))
             return null;
         
-        Collections.sort(metricValues);
-
-        if(metricValues.size() % 2 == 0) {
-            return (metricValues.get(metricValues.size() / 2)
-                    + metricValues.get(metricValues.size() / 2 - 1)) / 2;
-        } 
+        Metric metric = metricTable.get(name);
         
-        return metricValues.get(metricValues.size() / 2);
+        if(metric.isEmpty())
+            return null;
+            
+        return metric.getHeap();
     }
+    
+    
 }

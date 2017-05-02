@@ -31,14 +31,14 @@ public class MetricsServlet extends HttpServlet {
 		if(request.getServletPath().equals("/createmetric")) {
 		    String name = request.getParameter("metricname");
 		    if(DBWrapper.insertMetric(name)) {
-		        String message = "<html>Metric created succesfully</html>";
-	            response.setContentType("text/html");
+		        String message = "{ \"status\" : \"Metric created succesfully\" }";
+	            response.setContentType("application/json");
 				response.setContentLength(message.length() + 1);
 				response.setStatus(HttpServletResponse.SC_OK);
 				out.println(message);
 		    } else {
-		        String message = "<html>Metric already exists!</html>";
-	            response.setContentType("text/html");
+		        String message = "{ \"status\" : \"Metric already exists!\" }";
+	            response.setContentType("application/json");
 				response.setContentLength(message.length() + 1);
 				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				out.println(message);
@@ -48,16 +48,16 @@ public class MetricsServlet extends HttpServlet {
 		    Double val = Double.parseDouble(request.getParameter("value"));
 		    
 		    if(DBWrapper.addValue(name, val)) {
-		        String message = "<html>Value added succesfully</html>";
-	            response.setContentType("text/html");
+	            String message = "{ \"status\" : \"Value added succesfully!\" }";
+	            response.setContentType("application/json");
 				response.setContentLength(message.length() + 1);
 				response.setStatus(HttpServletResponse.SC_OK);
 				out.println(message);
 		    } else {
-		        String message = "<html>Cannot add to metric/metric doesn't exist!</html>";
-	            response.setContentType("text/html");
+	            String message = "{ \"status\" : \"Cannot add to metric/metric doesn't exist!\" }";
+	            response.setContentType("application/json");
 				response.setContentLength(message.length() + 1);
-				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				response.setStatus(HttpServletResponse.SC_OK);
 				out.println(message);
 		    }
 		}
@@ -88,14 +88,14 @@ public class MetricsServlet extends HttpServlet {
 		    String name = request.getParameter("metricname");
             Double mean = DBWrapper.getMean(name);
         	if(mean != null) {
-        	    String message = "<html>Mean: " + Double.toString(mean) + "</html>";
-        	    response.setContentType("text/html");
-        		response.setContentLength(message.length() + 1);
-        	    response.setStatus(HttpServletResponse.SC_OK);
-        		out.println(message);
+        	    String message = "{ \"Mean\" : \"" + Double.toString(mean) + "\" }";
+	            response.setContentType("application/json");
+				response.setContentLength(message.length() + 1);
+				response.setStatus(HttpServletResponse.SC_OK);
+				out.println(message);
         	} else {
-        	    String message = "<html>No values for metric/metric doesn't exist!</html>";
-        	    response.setContentType("text/html");
+        	    String message = "{ \"status\" : \"No values for metric/metric doesn't exist!\" }";
+        	    response.setContentType("application/json");
         	    response.setContentLength(message.length() + 1);
         		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         		out.println(message);
@@ -105,31 +105,32 @@ public class MetricsServlet extends HttpServlet {
 
             Double median = DBWrapper.getMedian(name);
 		    if(median != null) {
-		        String message = "<html>Median: " + Double.toString(median) + "</html>";
-	            response.setContentType("text/html");
+        	    String message = "{ \"Median\" : \"" + Double.toString(median) + "\" }";
+	            response.setContentType("application/json");
 				response.setContentLength(message.length() + 1);
 				response.setStatus(HttpServletResponse.SC_OK);
 				out.println(message);
-		    } else {
-		        String message = "<html>No values for metric/metric doesn't exist!</html>";
-	            response.setContentType("text/html");
-				response.setContentLength(message.length() + 1);
-				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-				out.println(message);
-		    }
+        	} else {
+        	    String message = "{ \"status\" : \"No values for metric/metric doesn't exist!\" }";
+        	    response.setContentType("application/json");
+        	    response.setContentLength(message.length() + 1);
+        		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        		out.println(message);
+        	}
+        	
 		} else if(request.getServletPath().equals("/getmin")) {
 		    String name = request.getParameter("metricname");
 
             Double min = DBWrapper.getMin(name);
 		    if(min != null) {
-		        String message = "<html>Min: " + Double.toString(min) + "</html>";
-	            response.setContentType("text/html");
+		        String message = "{ \"Min\" : \"" + Double.toString(min) + "\" }";
+	            response.setContentType("application/json");
 				response.setContentLength(message.length() + 1);
 				response.setStatus(HttpServletResponse.SC_OK);
 				out.println(message);
 		    } else {
-		        String message = "<html>No values for metric/metric doesn't exist!</html>";
-	            response.setContentType("text/html");
+		        String message = "{ \"status\" : \"No values for metric/metric doesn't exist!\" }";
+        	    response.setContentType("application/json");
 				response.setContentLength(message.length() + 1);
 				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				out.println(message);
@@ -139,36 +140,26 @@ public class MetricsServlet extends HttpServlet {
 
             Double max = DBWrapper.getMax(name);
 		    if(max != null) {
-		        String message = "<html>Max: " + Double.toString(max) + "</html>";
-	            response.setContentType("text/html");
+		        String message = "{ \"Max\" : \"" + Double.toString(max) + "\" }";
+	            response.setContentType("application/json");
 				response.setContentLength(message.length() + 1);
 				response.setStatus(HttpServletResponse.SC_OK);
 				out.println(message);
 		    } else {
-		        String message = "<html>No values for metric/metric doesn't exist!</html>";
-	            response.setContentType("text/html");
+		        String message = "{ \"status\" : \"No values for metric/metric doesn't exist!\" }";
+        	    response.setContentType("application/json");
 				response.setContentLength(message.length() + 1);
 				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				out.println(message);
 		    }
 		} else if(request.getServletPath().equals("/printmetric")) {
 		    String name = request.getParameter("metricname");
-
-            String vals = DBWrapper.printMetric(name);
-		    if(vals != null) {
-		        String message = "<html>Vals: " + vals + "</html>";
-	            response.setContentType("text/html");
-				response.setContentLength(message.length() + 1);
-				response.setStatus(HttpServletResponse.SC_OK);
-				out.println(message);
-		    } else {
-		        String message = "<html>No values for metric/metric doesn't exist!</html>";
-	            response.setContentType("text/html");
-				response.setContentLength(message.length() + 1);
-				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-				out.println(message);
-		    }
-		} 
+		    String message = "<html>" + DBWrapper.printMetric(name) + "</html>";
+	        response.setContentType("text/html");
+			response.setContentLength(message.length() + 1);
+			response.setStatus(HttpServletResponse.SC_OK);
+			out.println(message);
+		}
 		
 		DBWrapper.shutdownEntityStore();
     }
