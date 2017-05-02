@@ -15,7 +15,6 @@ public class RunAllTests extends TestCase {
     try {
       @SuppressWarnings("rawtypes")
       Class[] testClasses = {
-        AddValueTest.class,
         GetMinTest.class,
         GetMaxTest.class,
         GetMeanTest.class,

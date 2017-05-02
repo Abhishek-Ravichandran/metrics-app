@@ -13,6 +13,7 @@ public class AddValueTest extends TestCase {
         DBWrapper.addValue("testmetric", 2.0d);
         DBWrapper.addValue("testmetric", 6.0d);
         
+        System.out.println(DBWrapper.printMetric("testmetric"));
         assertEquals(true, DBWrapper.printMetric("testmetric").trim().equals("4.0 2.0 6.0"));
   	}
 }
