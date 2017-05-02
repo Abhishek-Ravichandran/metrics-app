@@ -10,15 +10,15 @@ To run JUnit tests for the API, simply run `ant run-metrics-tests`.
 
 `POST /createmetric (metricname)` - Creates a metric
 
-`POST /addvalue (metricname) (value)` - Adds a metric
+`POST /addvalue (metricname) (value)` - Adds a metric - `O(logn)`
 
-`GET /getmean (metricname)` - Retrieves the mean for a given metric - `O(n)`
+`GET /getmean (metricname)` - Retrieves the mean for a given metric - `O(1)`
 
-`GET /getmedian (metricname)` - Retrieves the median for a given metric - `O(nlgn)`
+`GET /getmedian (metricname)` - Retrieves the median for a given metric - `O(1)`
 
-`GET /getmin (metricname)` - Retrieves the min value for a given metric - `O(n)`
+`GET /getmin (metricname)` - Retrieves the min value for a given metric - `O(1)`
 
-`GET /getmax (metricname)` - Retrieves the max value for a given metric - `O(n)`
+`GET /getmax (metricname)` - Retrieves the max value for a given metric - `O(1)`
 
 
 
